@@ -33,8 +33,12 @@ def get_db_credentials(db_id):
 def create_db_engine(credentials):
     if credentials['db_type'] == 'sqlite':
         db_url = f"sqlite:///{credentials['db_name']}"
+    elif credentials['db_type'] == 'mssql':
+        db_url = f"mssql+pyodbc://{credentials['db_user']}:{credentials['db_password']}@{credentials['db_host']}:{credentials['db_port']}/{credentials['db_name']}?driver=ODBC+Driver+17+for+SQL+Server"
     elif credentials['db_type'] == 'mysql':
         db_url = f"mysql+pymysql://{credentials['db_user']}:{credentials['db_password']}@{credentials['db_host']}:{credentials['db_port']}/{credentials['db_name']}"
+    elif credentials['db_type'] == 'postgresql':
+        db_url = f"postgresql+psycopg2://{credentials['db_user']}:{credentials['db_password']}@{credentials['db_host']}:{credentials['db_port']}/{credentials['db_name']}"
     else:
         db_url = f"{credentials['db_type']}://{credentials['db_user']}:{credentials['db_password']}@{credentials['db_host']}:{credentials['db_port']}/{credentials['db_name']}"
     return create_engine(db_url)
@@ -42,7 +46,7 @@ def create_db_engine(credentials):
 @app.route('/', methods=['GET'])
 def index():
     credentials = DBCredentials.query.all()
-    databases = [{'id': cred.id, 'db_name': cred.db_name} for cred in credentials]
+    databases = [{'id': cred.id, 'db_name': cred.db_name, 'db_type':cred.db_type} for cred in credentials]
     return render_template('index.html', databases=databases)
 
 @app.route('/tables/<int:db_id>', methods=['GET'])
@@ -54,7 +58,7 @@ def list_tables(db_id):
     engine = create_db_engine(credentials)
     try:
         with engine.connect() as connection:
-            result = connection.execute(text("SELECT table_name FROM information_schema.tables WHERE table_schema='public'"))
+            result = connection.execute(text("SELECT table_name FROM information_schema.tables"))
             tables = [row[0] for row in result]
     except OperationalError as e:
         return render_template('error.html')

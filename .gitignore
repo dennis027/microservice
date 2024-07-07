@@ -1,3 +1,4 @@
 env_backend/
 __pycache__/
 instance/
+.env

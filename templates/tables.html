@@ -5,6 +5,7 @@
 </head>
 <body>
     <h1>Tables in {{ db_name }}</h1>
+    <a href="/">Home</a>
     <ul>
         {% for table in tables %}
         <li><a href="/data/{{ db_id }}/{{ table }}">{{ table }}</a></li>

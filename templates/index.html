@@ -7,7 +7,7 @@
     <h1>Databases</h1>
     <ul>
         {% for db in databases %}
-        <li><a href="/tables/{{ db.id }}">{{ db.db_name }}</a></li>
+        <li><a href="/tables/{{ db.id }}">{{ db.db_name }} - {{ db.db_type }}</a></li>
         {% endfor %}
     </ul>
 
