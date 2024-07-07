@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tables in {{ db_name }}</title>
+</head>
+<body>
+    <h1>Tables in {{ db_name }}</h1>
+    <ul>
+        {% for table in tables %}
+        <li><a href="/data/{{ db_id }}/{{ table }}">{{ table }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
